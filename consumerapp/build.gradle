@@ -2,17 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-androidExtensions {
-    experimental = true
-}
-
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.mynotesapp"
+        applicationId "com.example.consumerapp"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -44,8 +39,4 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-}
-
-repositories {
-    mavenCentral()
 }

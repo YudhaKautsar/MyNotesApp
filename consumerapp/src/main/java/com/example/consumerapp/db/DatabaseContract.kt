@@ -1,18 +1,13 @@
-package com.example.mynotesapp.db
+package com.example.consumerapp.db
 
 import android.net.Uri
 import android.provider.BaseColumns
 
 object DatabaseContract {
 
-    // Authority yang digunakan
     const val AUTHORITY = "com.example.mynotesapp"
     const val SCHEME = "content"
 
-    /*
-    Penggunaan Base Columns akan memudahkan dalam penggunaan suatu table
-    Untuk id yang autoincrement sudah default ada di dalam kelas BaseColumns dengan nama field _ID
-     */
     internal class NoteColumns : BaseColumns {
         companion object {
             const val TABLE_NAME = "note"
@@ -22,7 +17,6 @@ object DatabaseContract {
             const val DATE = "date"
 
             // untuk membuat URI content://com.example.mynotesapp/db
-            // Base content yang digunakan untuk akses content provider
             val CONTENT_URI: Uri = Uri.Builder().scheme(SCHEME)
                 .authority(AUTHORITY)
                 .appendPath(TABLE_NAME)

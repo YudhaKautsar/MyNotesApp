@@ -1,6 +1,7 @@
-package com.example.mynotesapp
+package com.example.consumerapp
 
 import android.content.ContentValues
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,12 +10,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.example.mynotesapp.db.DatabaseContract.NoteColumns.Companion.CONTENT_URI
-import com.example.mynotesapp.db.DatabaseContract.NoteColumns.Companion.DATE
-import com.example.mynotesapp.db.DatabaseContract.NoteColumns.Companion.DESCRIPTION
-import com.example.mynotesapp.db.DatabaseContract.NoteColumns.Companion.TITLE
-import com.example.mynotesapp.entity.Note
-import com.example.mynotesapp.helper.MappingHelper
+import com.example.consumerapp.db.DatabaseContract.NoteColumns.Companion.CONTENT_URI
+import com.example.consumerapp.db.DatabaseContract.NoteColumns.Companion.DATE
+import com.example.consumerapp.db.DatabaseContract.NoteColumns.Companion.DESCRIPTION
+import com.example.consumerapp.db.DatabaseContract.NoteColumns.Companion.TITLE
+import com.example.consumerapp.entity.Note
+import com.example.consumerapp.helper.MappingHelper
 import kotlinx.android.synthetic.main.activity_note_add_update.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,7 +31,10 @@ class NoteAddUpdateActivity : AppCompatActivity(), View.OnClickListener {
         const val EXTRA_NOTE = "extra_note"
         const val EXTRA_POSITION = "extra_position"
         const val REQUEST_ADD = 100
+        const val RESULT_ADD = 101
         const val REQUEST_UPDATE = 200
+        const val RESULT_UPDATE = 201
+        const val RESULT_DELETE = 301
         const val ALERT_DIALOG_CLOSE = 10
         const val ALERT_DIALOG_DELETE = 20
     }
@@ -85,28 +89,23 @@ class NoteAddUpdateActivity : AppCompatActivity(), View.OnClickListener {
             val title = edt_title.text.toString().trim()
             val description = edt_description.text.toString().trim()
 
-            /*
-            Jika fieldnya masih kosong maka tampilkan error
-             */
             if (title.isEmpty()) {
                 edt_title.error = "Field can not be blank"
                 return
             }
 
-            // Gunakan contentvalues untuk menampung data
+            note?.title = title
+            note?.description = description
+
             val values = ContentValues()
             values.put(TITLE, title)
             values.put(DESCRIPTION, description)
 
-            /*
-            Jika merupakan edit setresultnya UPDATE, dan jika bukan maka setresultnya ADD
-            */
             if (isEdit) {
 
                 // Uri yang di dapatkan disini akan digunakan untuk ambil data dari provider
                 contentResolver.update(uriWithId, values, null, null)
                 Toast.makeText(this, "Satu item berhasil di edit", Toast.LENGTH_SHORT).show()
-                finish()
             } else {
                 values.put(DATE, getCurrentDate())
                 // Gunakan content uri untuk insert
@@ -143,11 +142,6 @@ class NoteAddUpdateActivity : AppCompatActivity(), View.OnClickListener {
         showAlertDialog(ALERT_DIALOG_CLOSE)
     }
 
-    /*
-    Konfirmasi dialog sebelum proses batal atau hapus
-    close = 10
-    delete = 20
-    */
     private fun showAlertDialog(type: Int) {
         val isDialogClose = type == ALERT_DIALOG_CLOSE
         val dialogTitle: String

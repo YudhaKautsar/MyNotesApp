@@ -1,4 +1,4 @@
-package com.example.mynotesapp.adapter
+package com.example.consumerapp.adapter
 
 import android.app.Activity
 import android.content.Intent
@@ -6,22 +6,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mynotesapp.CustomOnItemClickListener
-import com.example.mynotesapp.NoteAddUpdateActivity
-import com.example.mynotesapp.R
-import com.example.mynotesapp.entity.Note
+import com.example.consumerapp.CustomOnItemClickListener
+import com.example.consumerapp.NoteAddUpdateActivity
+import com.example.consumerapp.R
+import com.example.consumerapp.entity.Note
 import kotlinx.android.synthetic.main.item_note.view.*
 
 class NoteAdapter(private val activity: Activity) : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     var listNotes = ArrayList<Note>()
     set(listNotes) {
+        if (listNotes.size > 0) {
             this.listNotes.clear()
+        }
+        this.listNotes.addAll(listNotes)
 
-            this.listNotes.addAll(listNotes)
-
-            notifyDataSetChanged()
+        notifyDataSetChanged()
     }
+
+    fun addItem(note: Note) {
+        this.listNotes.add(note)
+        notifyItemInserted(this.listNotes.size - 1)
+    }
+
+    fun updateItems(position: Int, note: Note) {
+        this.listNotes[position] = note
+        notifyItemChanged(position, note)
+    }
+
+    fun removeItem(position: Int) {
+        this.listNotes.removeAt(position)
+        notifyItemChanged(position)
+        notifyItemRangeChanged(position, this.listNotes.size)
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
